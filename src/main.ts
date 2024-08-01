@@ -1,24 +1,33 @@
-import './style.css'
-import typescriptLogo from './typescript.svg'
-import viteLogo from '/vite.svg'
-import { setupCounter } from './counter.ts'
+import { PageController } from "./controller/page.controllers"
 
-document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="${viteLogo}" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://www.typescriptlang.org/" target="_blank">
-      <img src="${typescriptLogo}" class="logo vanilla" alt="TypeScript logo" />
-    </a>
-    <h1>Vite + TypeScript</h1>
-    <div class="card">
-      <button id="counter" type="button"></button>
-    </div>
-    <p class="read-the-docs">
-      Click on the Vite and TypeScript logos to learn more
-    </p>
-  </div>
-`
+const url= "https://reqres.in/api/"
 
-setupCounter(document.querySelector<HTMLButtonElement>('#counter')!)
+const loginForm =document.querySelector("#loginform") as HTMLFormElement
+const emailUser = document.querySelector("#emailuser") as HTMLInputElement
+const passwordUser= document.querySelector("#password-user") as HTMLInputElement
+
+loginForm.addEventListener("submit", async (event:Event)=>{
+  event.preventDefault();
+
+  const user = {
+    email:emailUser.value,
+    password : passwordUser.value
+  }
+  
+  try{
+
+    const pageController=new PageController(url);
+    const responseOfLogin=await pageController.login(user,"login")
+    //console.log(token.token); para mirar si funciona
+    sessionStorage.setItem("token",responseOfLogin.token)// el token. token por que es un objeto
+
+    const getToken = sessionStorage.getItem("token");
+  if(getToken=== responseOfLogin.token){
+    
+    window.location.href="./src/view/home.html"
+  }
+}catch(e){
+  console.log(e)
+}
+
+  })
